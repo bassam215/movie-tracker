@@ -7,6 +7,6 @@ class AppError extends Error {
     this.statusText = statusText;
     this.message = message;
     return this;
-  }
+  } 
 }
 module.exports = new AppError();

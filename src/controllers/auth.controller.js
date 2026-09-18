@@ -2,6 +2,7 @@ const { validationResult } = require("express-validator");
 const AppError = require("../utils/appError");
 const httpStatusText = require("../utils/httpStatusText");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const User = require("../models/user.model");
 const userRegisterController = async (req, res) => {
@@ -45,7 +46,7 @@ const userLoginController = async (req, res) => {
         const errors = validationResult(req);
 
         if (!errors.isEmpty()) {
-            return res.status(401).json({
+            return res.status(400).json({
                 status: httpStatusText.ERROR,
                 message: errors.array()
             });
@@ -67,7 +68,7 @@ const userLoginController = async (req, res) => {
         }
         const userData = user.toObject();
         delete userData.password;
-        const token = null;
+        const token = jwt.sign({ id : user._id , username :user.username }, process.env.JWT_SECRET);
 
         res.status(200).json({
             status: httpStatusText.SUCCESS,
